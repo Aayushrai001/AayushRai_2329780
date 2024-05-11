@@ -10,13 +10,14 @@
         /* CSS styles for the page */
         body {
             font-family: Arial, sans-serif;
-            background-color: #f8f9fa;
+            background-image: url("movies.jpg");
             margin: 0;
             padding: 0;
+            color: white;
         }
 
         .container {
-            background-color: #fff;
+            background-color: black;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             padding: 30px;
@@ -27,14 +28,26 @@
             text-align: center;
         }
 
+        th {
+            color: white;
+            /* Set text color to white */
+        }
+
+        label {
+            color: black;
+        }
+
         #reviewList tr td,
         #reviewList tr th {
+            color: white;
             vertical-align: middle;
         }
 
         .editButton,
         .deleteButton {
+            background-color: black;
             cursor: pointer;
+            border-color: white;
         }
 
         #sortButton {
@@ -48,7 +61,8 @@
             font-size: 1.6rem;
             margin-top: 30px;
             padding: 0px 60px;
-            background-color: #28a745;
+            color: black;
+            background-color: white;
             border-color: #28a745;
         }
 
@@ -58,7 +72,7 @@
         }
 
         header {
-            background-color: #343a40;
+            background-color: black;
             color: #fff;
             padding: 20px 0;
             text-align: center;
@@ -67,6 +81,14 @@
             position: sticky;
             top: 0;
             z-index: 1000;
+        }
+
+        h1.edit {
+            color: black;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-decoration: underline;
         }
 
         footer {
@@ -82,6 +104,10 @@
 
         footer p {
             margin: 0;
+        }
+
+        .modal-content {
+            color: black;
         }
 
         .modal-body .mb-3 {
@@ -104,7 +130,7 @@
 
 <body>
     <header>
-        <h1>Movie Review Website</h1>
+        <h1>Movie Review </h1>
     </header>
     <div class="container">
         <h1 id="mainTitle">My Movie Reviews</h1>
@@ -116,6 +142,8 @@
                     <option value="director">Director</option>
                     <option value="rating">Rating</option>
                     <option value="releaseDate">Release Date</option>
+                    <option value="reviewDate">Review Date</option>
+                    <option value="actor">Actor</option>
                 </select>
             </div>
             <div class="col-sm-6">
@@ -131,6 +159,8 @@
                     <th>Director</th>
                     <th>Rating</th>
                     <th>Release Date</th>
+                    <th>Review Date</th>
+                    <th>Actor</th>
                     <th>Edit</th>
                     <th>Delete</th>
                 </tr>
@@ -149,6 +179,7 @@
                 </div>
                 <div class="modal-body">
                     <!-- Form fields for adding a review -->
+                    <h1 class="edit">Add Movies Reviews</h1>
                     <div class="mb-3">
                         <label for="addMovieName" class="form-label">Movie Name</label>
                         <input type="text" class="form-control" id="addMovieName">
@@ -170,6 +201,14 @@
                     <div class="mb-3">
                         <label for="addMovieReleaseDate" class="form-label">Release Date</label>
                         <input type="date" class="form-control" id="addMovieReleaseDate">
+                    </div>
+                    <div class="mb-3">
+                        <label for="addReviewDate" class="form-label">Review Date</label>
+                        <input type="date" class="form-control" id="addReviewDate">
+                    </div>
+                    <div class="mb-3">
+                        <label for="addActor" class="form-label">Actor</label>
+                        <input type="text" class="form-control" id="addActor">
                     </div>
                     <div class="alert alert-danger" role="alert" id="addError" style="display: none;">Please fill in all
                         fields.</div>
@@ -193,6 +232,7 @@
                 </div>
                 <div class="modal-body">
                     <!-- Form fields for editing a review -->
+                    <h1 class="edit">Edit Movies</h1>
                     <div class="mb-3">
                         <label for="editMovieName" class="form-label">Movie Name</label>
                         <input type="text" class="form-control" id="editMovieName">
@@ -214,6 +254,14 @@
                     <div class="mb-3">
                         <label for="editMovieReleaseDate" class="form-label">Release Date</label>
                         <input type="date" class="form-control" id="editMovieReleaseDate">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editReviewDate" class="form-label">Review Date</label>
+                        <input type="date" class="form-control" id="editReviewDate">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editActor" class="form-label">Actor</label>
+                        <input type="text" class="form-control" id="editActor">
                     </div>
                     <div class="alert alert-danger" role="alert" id="editError" style="display: none;">Please fill in
                         all fields.</div>
@@ -245,237 +293,10 @@
         </div>
     </div>
     <footer>
-        <p>&copy; Movie Review Website | Made by Roshan_2329235</p>
+        <p>&copy; RaiMovie Review | Made by AayushRai_2329780</p>
     </footer>
-
+    <script type="module" src="myscripts.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <script type="module">
-        // Import required Firebase services
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.18.0/firebase-app.js";
-        import {
-            Firestore,
-            getFirestore,
-            onSnapshot,
-            query,
-            collection,
-            addDoc,
-            doc,
-            updateDoc,
-            deleteDoc,
-        } from "https://www.gstatic.com/firebasejs/9.18.0/firebase-firestore.js";
-
-        // Web app's Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyAcsZmmV-D-r565kDIiD8SET0z_W0nBsGI",
-            authDomain: "aayush-2329780.firebaseapp.com",
-            projectId: "aayush-2329780",
-            storageBucket: "aayush-2329780.appspot.com",
-            messagingSenderId: "601967363086",
-            appId: "1:601967363086:web:d40ecc03cf5d5636afe85f"
-        };
-
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        let unsubscribe;
-
-        // Function to add a review
-        function addReview(movieName, director, rating, releaseDate) {
-            return addDoc(collection(db, "movies_review"), {
-                movie_name: movieName,
-                director: director,
-                rating: rating,
-                release_date: releaseDate
-            });
-        }
-
-        // Function to update a review
-        function updateReview(reviewId, data) {
-            const reviewRef = doc(db, "movies_review", reviewId);
-            return updateDoc(reviewRef, data);
-        }
-
-        // Function to delete a review
-        function deleteReview(reviewId) {
-            return deleteDoc(doc(db, "movies_review", reviewId));
-        }
-
-        // Get a live data snapshot (i.e. auto-refresh) of our Reviews collection
-        function getReviews(sortByField) {
-            const q = query(collection(db, "movies_review"));
-            unsubscribe = onSnapshot(q, (snapshot) => {
-                // Get the data from Firestore
-                const reviews = [];
-                snapshot.forEach((doc) => {
-                    const reviewData = doc.data();
-                    reviews.push({
-                        id: doc.id,
-                        movieName: reviewData.movie_name,
-                        director: reviewData.director,
-                        rating: reviewData.rating,
-                        releaseDate: reviewData.release_date.toDate() // Assuming release_date is a Firestore Timestamp
-                    });
-                });
-
-                // Sort the reviews based on the selected field
-                reviews.sort((a, b) => {
-                    const fieldA = a[sortByField];
-                    const fieldB = b[sortByField];
-
-                    if (sortByField === "rating") {
-                        return fieldA - fieldB;
-                    } else if (sortByField === "releaseDate") {
-                        return fieldA.getTime() - fieldB.getTime();
-                    } else {
-                        // Sort as strings
-                        const stringA = fieldA.toLowerCase();
-                        const stringB = fieldB.toLowerCase();
-                        if (stringA < stringB) {
-                            return -1;
-                        }
-                        if (stringA > stringB) {
-                            return 1;
-                        }
-                        return 0;
-                    }
-                });
-
-                // Display the sorted reviews
-                displayReviews(reviews);
-            });
-        }
-
-        // Function to display reviews in the HTML table
-        function displayReviews(reviews) {
-            // Empty HTML table
-            $("#reviewList").empty();
-
-            // Loop through reviews and add to HTML table
-            reviews.forEach((review) => {
-                const formattedDate = `${review.releaseDate.getFullYear()}-${review.releaseDate.getMonth() + 1
-                    }-${review.releaseDate.getDate()}`;
-
-                const tableRow = `
-          <tr>
-            <td>${review.movieName}</td>
-            <td>${review.director}</td>
-            <td>${review.rating}/5</td>
-            <td>${formattedDate}</td>
-            <td><button class='btn btn-primary editButton' data-id='${review.id}'>Edit</button></td>
-            <td><button class='btn btn-danger deleteButton' data-id='${review.id}'>Delete</button></td>
-          </tr>
-        `;
-
-                $("#reviewList").append(tableRow);
-            });
-
-            // Display review count
-            $("#mainTitle").html(reviews.length + " movie reviews in the list");
-
-            // Attach event listeners for edit buttons
-            $(".editButton").click(function () {
-                const reviewId = $(this).data("id");
-                const review = reviews.find((r) => r.id === reviewId);
-                populateEditModal(review);
-                $("#editModal").modal("show");
-            });
-
-            // Attach event listeners for delete buttons
-            $(".deleteButton").click(function () {
-                const reviewId = $(this).data("id");
-                $("#deleteModal").modal("show");
-
-                // Confirm delete button clicked
-                $("#confirmDeleteButton").click(function () {
-                    deleteReview(reviewId);
-                    $("#deleteModal").modal("hide");
-                });
-            });
-        }
-
-        // Function to populate the edit modal with review data
-        function populateEditModal(review) {
-            $("#editMovieName").val(review.movieName);
-            $("#editMovieRating").val(review.rating);
-            $("#editMovieDirector").val(review.director);
-            const formattedDate = review.releaseDate.toISOString().split('T')[0];
-            $("#editMovieReleaseDate").val(formattedDate);
-
-            // Clear error message when modal is closed
-            $("#editModal").on("hidden.bs.modal", function () {
-                $("#editError").hide();
-                // Remove event listener after modal is hidden
-                $("#saveChangesButton").off("click");
-            });
-
-            // Save changes button clicked in edit modal
-            $("#saveChangesButton").click(function () {
-                const reviewId = review.id;
-                const movieName = $("#editMovieName").val().trim();
-                const movieRating = $("#editMovieRating").val().trim();
-                const movieDirector = $("#editMovieDirector").val().trim();
-                const movieReleaseDate = $("#editMovieReleaseDate").val().trim();
-
-                if (movieName === "" || movieRating === "" || movieDirector === "" || movieReleaseDate === "") {
-                    $("#editError").show();
-                    return;
-                }
-
-                const data = {
-                    movie_name: movieName,
-                    rating: parseInt(movieRating),
-                    director: movieDirector,
-                    release_date: new Date(movieReleaseDate)
-                };
-
-                updateReview(reviewId, data);
-                $("#editModal").modal("hide");
-            });
-
-            // Clear error message when modal is shown
-            $('#editModal').on('show.bs.modal', function () {
-                $("#editError").hide();
-            });
-        }
-
-        // Sort button clicked
-        $("#sortButton").click(function () {
-            const sortByField = $("#sortField").val();
-            getReviews(sortByField);
-        });
-
-        // Close button clicked in add modal
-        $("#closeAddModal").click(function () {
-            $("#addError").hide(); // Hide error message when closing modal
-        });
-
-        // Add Review button pressed
-        $("#addReviewButton").click(function () {
-            const movieName = $("#addMovieName").val().trim();
-            const movieRating = $("#addMovieRating").val().trim();
-            const movieDirector = $("#addMovieDirector").val().trim();
-            const movieReleaseDate = $("#addMovieReleaseDate").val().trim();
-
-            if (movieName === "" || movieRating === "" || movieDirector === "" || movieReleaseDate === "") {
-                $("#addError").show();
-                return;
-            }
-
-            addReview(movieName, movieDirector, parseInt(movieRating), new Date(movieReleaseDate));
-
-            $("#addModal").modal("hide");
-            $("#addMovieName").val("");
-            $("#addMovieRating").val("1");
-            $("#addMovieDirector").val("");
-            $("#addMovieReleaseDate").val("");
-            $("#addError").hide(); // Hide error message when closing modal
-        });
-
-        // Initialize with default sorting by movie name
-        getReviews("movieName");
-    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
